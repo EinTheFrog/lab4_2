@@ -26,7 +26,7 @@ class NavigationTest {
     fun testAbout() {
         launchActivity<MainActivity>()
         openAbout()
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        checkAbout()
     }
 
     @Test
@@ -135,9 +135,28 @@ class NavigationTest {
     fun testOrientationChangeAbout() {
         val activityScenario = launchActivity<MainActivity>()
         openAbout()
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        checkAbout()
         changeScreenOrientation(activityScenario)
-        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        checkAbout()
+    }
+
+    @Test
+    fun testNavigateUp() {
+        launchActivity<MainActivity>()
+        openAbout()
+        checkAbout()
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testNavigateUpAfterRotation() {
+        val activityScenario = launchActivity<MainActivity>()
+        openAbout()
+        checkAbout()
+        changeScreenOrientation(activityScenario)
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
     }
 
     private fun checkFragment1() {
@@ -158,6 +177,11 @@ class NavigationTest {
         onView(withId(R.id.activity_main)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToFirst)).check(matches(isDisplayed()))
         onView(withId(R.id.bnToSecond)).check(matches(isDisplayed()))
+    }
+
+    private fun checkAbout() {
+        onView(withId(R.id.activity_about)).check(matches(isDisplayed()))
+        onView(withId(R.id.tvAbout)).check(matches(isDisplayed()))
     }
 
     private fun changeScreenOrientation(activityScenario: ActivityScenario<MainActivity>) {
