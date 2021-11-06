@@ -11,9 +11,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.espresso.Espresso.pressBack
-import junit.framework.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import androidx.test.espresso.NoActivityResumedException
+import junit.framework.Assert.*
+
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -48,6 +50,22 @@ class NavigationTest {
         onView(withId(R.id.bnToSecond)).perform(click())
         onView(withId(R.id.bnToThird)).perform(click())
         checkFragment3()
+    }
+
+    @Test
+    fun testBackFromFirst1() {
+        launchActivity<MainActivity>()
+        checkBackFromApp()
+    }
+
+    @Test
+    fun testBackFromFirst2() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        onView(withId(R.id.bnToFirst)).perform(click())
+        checkFragment1()
+        checkBackFromApp()
     }
 
     @Test
@@ -132,7 +150,7 @@ class NavigationTest {
     }
 
     @Test
-    fun testOrientationChangeAbout() {
+    fun testOrientationChangeAbout1() {
         val activityScenario = launchActivity<MainActivity>()
         openAbout()
         checkAbout()
@@ -141,11 +159,75 @@ class NavigationTest {
     }
 
     @Test
-    fun testNavigateUp() {
+    fun testOrientationChangeAbout2() {
+        val activityScenario = launchActivity<MainActivity>()
+        openAbout()
+        checkAbout()
+        activityScenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+        Thread.sleep(500)
+
+        pressBack()
+        checkFragment1()
+    }
+
+    @Test
+    fun testOrientationChangeAbout3() {
+        val activityScenario = launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+
+        openAbout()
+        checkAbout()
+        activityScenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+        Thread.sleep(500)
+
+        pressBack()
+        checkFragment3()
+    }
+
+    @Test
+    fun testNavigateUp1() {
         launchActivity<MainActivity>()
         openAbout()
         checkAbout()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testNavigateUp2() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        openAbout()
+        checkAbout()
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment2()
+    }
+
+    @Test
+    fun testNavigateUp3() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        openAbout()
+        checkAbout()
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment3()
+    }
+
+    @Test
+    fun testBackAfterNavigateUp() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        openAbout()
+        checkAbout()
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment2()
+        pressBack()
         checkFragment1()
     }
 
@@ -193,5 +275,13 @@ class NavigationTest {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
         Thread.sleep(500)
+    }
+
+    private fun checkBackFromApp() {
+        try {
+            pressBack()
+            fail("Should have thrown NoActivityResumedException")
+        } catch (expected: NoActivityResumedException) {
+        }
     }
 }
