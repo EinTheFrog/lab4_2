@@ -192,6 +192,45 @@ class NavigationTest {
     @Test
     fun testNavigateUp1() {
         launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+    @Test
+    fun testNavigateUp2() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment2()
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testNavigateUp3() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testNavigateUp4() {
+        val activityScenario = launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        onView(withId(R.id.bnToSecond)).perform(click())
+        changeScreenOrientation(activityScenario)
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testNavigateUpAbout1() {
+        launchActivity<MainActivity>()
         openAbout()
         checkAbout()
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
@@ -199,7 +238,7 @@ class NavigationTest {
     }
 
     @Test
-    fun testNavigateUp2() {
+    fun testNavigateUpAbout2() {
         launchActivity<MainActivity>()
         onView(withId(R.id.bnToSecond)).perform(click())
         openAbout()
@@ -209,7 +248,7 @@ class NavigationTest {
     }
 
     @Test
-    fun testNavigateUp3() {
+    fun testNavigateUpAbout3() {
         launchActivity<MainActivity>()
         onView(withId(R.id.bnToSecond)).perform(click())
         onView(withId(R.id.bnToThird)).perform(click())
@@ -238,6 +277,47 @@ class NavigationTest {
         checkAbout()
         changeScreenOrientation(activityScenario)
         onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testFragment1Buttons() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        checkFragment2()
+        pressBack()
+        openAbout()
+        checkAbout()
+        pressBack()
+        checkFragment1()
+    }
+
+    @Test
+    fun testFragment2Buttons() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        checkFragment3()
+        pressBack()
+        openAbout()
+        checkAbout()
+        pressBack()
+        onView(withId(R.id.bnToFirst)).perform(click())
+        checkFragment1()
+    }
+
+    @Test
+    fun testFragment3Buttons() {
+        launchActivity<MainActivity>()
+        onView(withId(R.id.bnToSecond)).perform(click())
+        onView(withId(R.id.bnToThird)).perform(click())
+        onView(withId(R.id.bnToSecond)).perform(click())
+        checkFragment2()
+        onView(withId(R.id.bnToThird)).perform(click())
+        openAbout()
+        checkAbout()
+        pressBack()
+        onView(withId(R.id.bnToFirst)).perform(click())
         checkFragment1()
     }
 
